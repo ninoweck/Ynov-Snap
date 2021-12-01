@@ -1,0 +1,33 @@
+    override func viewDidLoad() {
+    super.viewDidLoad()
+    // Do any additional setup after loading the view, typically from a nib.
+
+    let request = createRequest()
+    let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
+        if error != nil {
+            // handle error here
+            print(error)
+            return
+        }
+        do {
+            if let responseDictionary = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary {
+                print("success == \(responseDictionary)")
+
+            }
+        } catch {
+            print(error)
+
+            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print("responseString = \(responseString)")
+        }
+    }
+    task.resume()
+
+
+}
+
+func createRequest () -> NSURLRequest {
+    let param = []
+
+
+    let boundary = generateBoundaryString()
