@@ -1,0 +1,29 @@
+// imagesURLS is an optional array of URLs, i.e. imageURLS:[URL]?
+
+if let imgURLs = imagesURLS {
+    for f in imgURLs {
+        let filename = f.lastPathComponent  
+        let splitName = filename.split(separator: ".")
+        let name = String(describing: splitName.first)
+        let filetype = String(describing: splitName.last)
+
+        let imgBoundary = "\r\n--\(boundary)\r\nContent-Type: image/\(filetype)\r\nContent-Disposition: form-data; filename=\(filename); name=\(name)\r\n\r\n"
+
+        if let d = imgBoundary.data(using: .utf8) {
+            bodyData.append(d)
+        }
+
+        do {
+            let imgData = try Data(contentsOf:f, options:[])
+            bodyData.append(imgData)
+        }
+        catch {
+            // can't load image data
+        }
+
+        }
+    }
+    let closingBoundary = "\r\n--\(boundary)--"
+    if let d = closingBoundary.data(using: .utf8) {
+            bodyData.append(d)
+    }
